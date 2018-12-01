@@ -2,14 +2,13 @@
 sm2rain
 =======
 
-
-Add a short description here!
+Implementation of the SM2Rain algorithm.
 
 
 Description
 ===========
 
-A longer description of your project goes here...
+Soil moisture time series are converted into rainfall.
 
 
 Note
