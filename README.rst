@@ -1,7 +1,6 @@
 =======
 sm2rain
 =======
-https://github.com/IRPIhydrology/sm2rain
 
 .. image:: https://travis-ci.org/IRPIhydrology/sm2rain.svg?branch=master
     :target: https://travis-ci.org/IRPIhydrology/sm2rain
