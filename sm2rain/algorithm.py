@@ -6,36 +6,38 @@ import numpy as np
 from scipy.optimize import minimize
 
 
-def sm2rain(sm, a, b, z, thr=None):
+def ts_sm2rain(sm, a, b, z, thr=None):
     """
     Retrieve rainfall from soil moisture.
 
     Parameters
     ----------
     sm : numpy.ndarray
-        Soil moisture time series.
-    a : float
+        Single or multiple soil moisture time series.
+    a : float, numpy.ndarray
         a parameter, units mm.
-    b : float
+    b : float, numpy.ndarray
         b parameter, units -.
-    z : float
+    z : float, numpy.ndarray
         Z parameter, units mm.
+    thr : float, optional
+        Upper threshold of p_sim (default: None).
 
     Returns
     -------
     p_sim : numpy.ndarray
-        Precipitation time series.
+        Single or multiple simulated precipitation time series.
     """
-    p_sim = z * (sm[1:] - sm[:-1]) + ((a * sm[1:]**b + a * sm[:-1]**b) / 2.)
-    p_sim = np.clip(p_sim, 0, thr)
+    p_sim = z * (sm[1:] - sm[:-1]) + \
+        ((a * sm[1:]**b + a * sm[:-1]**b) / 2.)
 
-    return p_sim
+    return np.clip(p_sim, 0, thr)
 
 
 def calib_sm2rain(sm, p_obs, x0=None, bounds=None,
                   options=None, method='TNC'):
     """
-    Calibrate parameters z, a, b.
+    Calibrate sm2rain parameters a, b, z.
 
     Parameters
     ----------
@@ -43,6 +45,18 @@ def calib_sm2rain(sm, p_obs, x0=None, bounds=None,
         Soil moisture time series.
     p_obs : numpy.ndarray
         Precipitation time series.
+    x0 : tuple, optional
+        Initial guess of a, b, z (default: (20, 5, 80)).
+    bounds : tuple of tuples, optional
+        Boundary values for a, b, z
+        (default: ((0, 200), (0.01, 50), (1, 800)).
+    options : dict, optional
+        A dictionary of solver options
+        (default: {'ftol': 1e-8, 'maxiter': 3000, 'disp': False}).
+        For more explanation/options see scipy.minimize.
+    method : str, optional
+        Type of solver (default: 'TNC', i.e. Truncated Newton).
+        For more explanation/options see scipy.minimize.
 
     Returns
     -------
@@ -51,7 +65,7 @@ def calib_sm2rain(sm, p_obs, x0=None, bounds=None,
     b : float
         b parameter, units -.
     z : float
-        Z parameter, units mm.
+        z parameter, units mm.
     """
     if x0 is None:
         x0 = np.array([20., 5., 80.])
@@ -77,9 +91,9 @@ def cost_func(x0, sm, p_obs):
     Parameters
     ----------
     x0 : tuple
-        Start parameters (a, b, z).
+        Initial guess of parameters a, b, z.
     sm : numpy.ndarray
-        Soil moisture time series.
+        Single soil moisture time series.
     p_obs : numpy.ndarray
         Observed precipitation time series.
 
@@ -88,7 +102,7 @@ def cost_func(x0, sm, p_obs):
     rmsd : float
         Root mean square difference between p_sim and p_obs.
     """
-    p_sim = sm2rain(sm, x0[0], x0[1], x0[2])
+    p_sim = ts_sm2rain(sm, x0[0], x0[1], x0[2])
     rmsd = np.nanmean((p_obs - p_sim)**2)**0.5
 
     return rmsd
@@ -105,7 +119,7 @@ def soil_water_index(sm, jd, t=2.):
     jd : numpy.ndarray
         Julian date time series.
     t : float, optional
-        t parameter (default: 2).
+        t parameter, the unit is fraction of days (default: 2).
 
     Returns
     -------
