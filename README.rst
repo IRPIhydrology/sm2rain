@@ -1,6 +1,16 @@
 =======
 sm2rain
 =======
+https://github.com/IRPIhydrology/sm2rain
+
+.. image:: https://travis-ci.org/IRPIhydrology/sm2rain.svg?branch=master
+    :target: https://travis-ci.org/IRPIhydrology/sm2rain
+
+.. image:: https://coveralls.io/repos/github/IRPIhydrology/sm2rain/badge.svg?branch=master
+   :target: https://coveralls.io/github/IRPIhydrology/sm2rain?branch=master
+
+.. image:: https://readthedocs.org/projects/sm2rain/badge/?version=latest
+   :target: http://sm2rain.readthedocs.org/
 
 Implementation of the SM2Rain algorithm.
 
