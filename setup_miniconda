@@ -1,4 +1,7 @@
-wget https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O miniconda.sh
+wget https://repo.continuum.io/miniconda/Miniconda3-4.3.30-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/sm2rain_conda
 export PATH="$HOME/sm2rain_conda/bin:$PATH"
+conda config --set always_yes yes --set changeps1 no
 conda create -n sm2rain_env numpy scipy
+source activate sm2rain_env
+python setup.py develop
