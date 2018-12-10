@@ -8,6 +8,9 @@ sm2rain
 .. image:: https://coveralls.io/repos/github/IRPIhydrology/sm2rain/badge.svg?branch=master
    :target: https://coveralls.io/github/IRPIhydrology/sm2rain?branch=master
 
+.. image:: https://badge.fury.io/py/sm2rain.svg
+   :target: http://badge.fury.io/py/sm2rain
+
 .. image:: https://readthedocs.org/projects/sm2rain/badge/?version=latest
    :target: http://sm2rain.readthedocs.org/
 
