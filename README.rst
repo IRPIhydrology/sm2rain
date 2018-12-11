@@ -14,7 +14,7 @@ sm2rain
 .. image:: https://readthedocs.org/projects/sm2rain/badge/?version=latest
    :target: http://sm2rain.readthedocs.org/
 
-Implementation of the SM2Rain algorithm.
+Implementation of the SM2RAIN algorithm.
 
 Citation
 ========
