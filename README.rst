@@ -14,7 +14,7 @@ sm2rain
 .. image:: https://readthedocs.org/projects/sm2rain/badge/?version=latest
    :target: http://sm2rain.readthedocs.org/
 
-Implementation of the SM2RAIN algorithm.
+Python implementation of the SM2RAIN algorithm [Brocca_etal_2014]_.
 
 Citation
 ========
@@ -31,10 +31,8 @@ This is to ensure that other researchers can access the exact research artefact.
 
 You can find additional information regarding DOI versioning at http://help.zenodo.org/#versioning
 
-Description
-===========
-
-Soil moisture time series are converted into rainfall [Brocca_etal_2014]_.
+References
+==========
 
 .. [Brocca_etal_2014] Brocca, L. et al., Soil as a natural rain gauge: Estimating global rainfall from satellite soil moisture data: Using the soil as a natural raingauge, Journal of Geophysical Research: Atmospheres, 119(9), 5128–5141 (2014).  http://dx.doi.org/10.1002/2014JD021489
 
