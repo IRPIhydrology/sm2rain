@@ -36,7 +36,7 @@ Description
 
 Soil moisture time series are converted into rainfall [Brocca_etal_2014]_.
 
-.. [Brocca_etal_2014] Brocca, L., Ciabatta, L., Massari, C., Moramarco, T., Hahn, S., Hasenauer, S., Kidd, R., …, Soil as a natural rain gauge: Estimating global rainfall from satellite soil moisture data: Using the soil as a natural raingauge, Journal of Geophysical Research: Atmospheres, 119(9), 5128–5141 (2014).  http://dx.doi.org/10.1002/2014JD021489
+.. [Brocca_etal_2014] Brocca, L. et al., Soil as a natural rain gauge: Estimating global rainfall from satellite soil moisture data: Using the soil as a natural raingauge, Journal of Geophysical Research: Atmospheres, 119(9), 5128–5141 (2014).  http://dx.doi.org/10.1002/2014JD021489
 
 Note
 ====
