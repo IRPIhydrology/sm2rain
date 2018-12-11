@@ -16,12 +16,27 @@ sm2rain
 
 Implementation of the SM2Rain algorithm.
 
+Citation
+========
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.2203560.svg
+   :target: https://doi.org/10.5281/zenodo.2203650
+
+If you use the software in a publication then please cite it using the Zenodo DOI.
+Be aware that this badge links to the latest package version.
+
+Please select your specific version at https://doi.org/10.5281/zenodo.2203650 to get the DOI of that version.
+You should normally always use the DOI for the specific version of your record in citations.
+This is to ensure that other researchers can access the exact research artefact.
+
+You can find additional information regarding DOI versioning at http://help.zenodo.org/#versioning
 
 Description
 ===========
 
-Soil moisture time series are converted into rainfall.
+Soil moisture time series are converted into rainfall [Brocca_etal_2014]_.
 
+.. [Brocca_etal_2014] Brocca, L., Ciabatta, L., Massari, C., Moramarco, T., Hahn, S., Hasenauer, S., Kidd, R., …, Soil as a natural rain gauge: Estimating global rainfall from satellite soil moisture data: Using the soil as a natural raingauge, Journal of Geophysical Research: Atmospheres, 119(9), 5128–5141 (2014).  http://dx.doi.org/10.1002/2014JD021489
 
 Note
 ====
