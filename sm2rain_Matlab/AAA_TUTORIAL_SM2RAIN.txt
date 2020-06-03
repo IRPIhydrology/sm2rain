@@ -1,0 +1,76 @@
+-------------------------------------------------------------------
+      SM2RAIN : Rainfall estimation through soil moisture data
+-------------------------------------------------------------------
+          TUTORIAL for the use of the Matlab SM2RAIN CODE
+-------------------------------------------------------------------
+
+SM2RAIN is a simple algorith for estimating rainfall from soil moisture data. If you do not believe it is possible, try yourself!
+The SM2RAIN code can be freely applied and used, just cite some of the references to the model reported below.
+The authors are highly interested to collaborate for the understanding of the model functioning and to improve its performance and applicability.
+
+For any questions please do not hesitate to contact:
+luca.brocca@irpi.cnr.it
+
+-------------------------------------------------------------------
+Updates on 25th March 2014:
+1) range of parameters and initial conditions of "cal_SM2RAIN.m" (for an improved calibration)
+2) example datasets from GRL paper (Brocca et al., 2013)
+3) name and saving of the file with the parameter values
+4) added "SM2RAIN_results_INSITU.pdf" with results for several sites in Europe and Australia
+5) change the code with a better analytical equation
+6) change of the "cal_SM2RAIN.m" for including also the "deltaSM" variable as input
+
+The following files are distributed
+
+1) MATLAB codes
+1.1) "SM2RAIN.m": SM2RAIN code
+1.2) "cal_SM2RAIN.m": code for SM2RAIN calibration (requires optimization toolbox)
+1.3) "RUN_SM2RAIN.m": script for running the calibration of SM2RAIN and creating the output figure
+
+2) Auxiliary file:
+2.1) "PAR_Yanco_1hour_0211.txt": contains the three SM2RAIN parameters
+     Z       = PAR(1); % depth of the soil layer
+     a       = PAR(2); % coefficient of drainage
+     b       = PAR(3); % exponent of drainage
+
+3) INPUT file (example):
+3.1) "PAR_CER_1hour_2011.dat": example file for hourly rainfall and soil moisture data at Yanco site in Australia
+     It contains 3 columns
+     a) date (in numeric Matlab format)
+     b) soil moisture (dimensionless: degree of saturation)
+     c) rainfall depth (in mm)
+
+4) OUTPUT file:
+4.1) "SM2R_CER_1hour_2011_24.png": figure with the model output (24 for daily data)
+     Upper figure: observed vs simulated rainfall
+     Lower figure: relative soil moisture timeseries
+
+-------------------------------------------------------------------
+
+To run the model for your own data the following steps have to be done (see the code RUN_SM2RAIN.m):
+1) creation of input file, e.g. "CER_1hour_2011.txt"
+2) SM2RAIN calibration with "cal_SM2RAIN.m"
+3) Run of SM2RAIN with "SM2RAIN.m"
+
+-------------------------------------------------------------------
+
+% ... few lines to run SM2RAIN
+% Application with Cerbara dataset, 24-hour rainfall estimation from hourly observations
+
+name='CER_1hour_2011';                          % name of the input file
+AGGR=24;                                        % aggregation period: 24 hour=1 day
+cal_SM2RAIN(name,AGGR)                          % SM2RAIN calibration
+SM2RAIN(name,load(['PAR_',name,'.dat']),AGGR,1) % RUN SM2RAIN
+
+-------------------------------------------------------------------
+
+Main Reference for SM2RAIN:
+Brocca, L., Melone, F., Moramarco, T., Wagner, W. (2013). A new method for rainfall estimation through soil moisture observations. Geophysical Research Letters, 40(5), 853-858, doi:10.1002/grl.50173.
+
+Brocca, L., Ciabatta, L., Massari, C., Dorigo, W., Hahn, S., Hasenauer, S., Kidd, R., Moramarco, T., Levizzani, V., Wagner, W. (...). Soil as a natural raingauge: estimating global rainfall from satellite soil moisture data. submitted to Journal of Geophysical Research
+
+Other reference with the model application:
+[1] Ciabatta, L., Brocca, L., Moramarco, T., Wagner, W. (2014). Comparison of different satellite rainfall products over the Italian territory. Proceedings of the IAEG 2014 Congress, Springer, in press.
+[2] Ciabatta L., Brocca L., Moramarco T., Puca S., Wagner W. (2013) Hydrological validation of satellite rainfall products in central Italy. Poster presented at IHS 2013 conference, Venice, December 2013.
+[3] Brocca, L., Ciabatta, L., Puca, S., Gabellani, S., Wagner, W., Moramarco, T. (2013). Improving H-SAF rainfall products by using satellite soil moisture observations. Poster presented at GPM workshop, Rome, November 2013.
+[4] Brocca, L., Melone, F., Moramarco, T., Wagner, W. (2013). A new method for rainfall estimation through soil moisture observations: possible applications. Poster presented at EGU 2013, Vienna, April 2013.
