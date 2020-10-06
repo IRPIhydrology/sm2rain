@@ -25,6 +25,8 @@ def ts_sm2rain(sm, a, b, z, jdates=None, T=None, c=None, thr=None):
         Julian date time series.
     T : float, numpy.ndarray
         T parameter, units days.
+    c : float, numpy.ndarray
+        Tpot parameter, units days.
     thr : float, optional
         Upper threshold of p_sim (default: None).
 
