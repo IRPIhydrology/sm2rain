@@ -1,6 +1,4 @@
-"""
-Module to compute and calibrate sm2rain.
-"""
+"""Module to compute and calibrate sm2rain."""
 
 import numpy as np
 from scipy.optimize import minimize
@@ -44,22 +42,21 @@ def ts_sm2rain(sm, a, b, z, jdates=None, T=None, c=None, thr=None):
     """
     if T is not None and c is None:
         swi = swicomp_nan(sm, jdates, T)
-        swi=(swi-np.nanmin(swi))/(np.nanmax(swi)-np.nanmin(swi))
+        swi = (swi-np.nanmin(swi))/(np.nanmax(swi)-np.nanmin(swi))
     elif c is not None:
         swi = swi_pot_nan(sm, jdates, T, c)
-        swi=(swi-np.nanmin(swi))/(np.nanmax(swi)-np.nanmin(swi))
+        swi = (swi-np.nanmin(swi))/(np.nanmax(swi)-np.nanmin(swi))
     else:
-        swi=sm
+        swi = sm
 
     if jdates is None:
-        jdates=np.arange(0,len(sm))
-
+        jdates = np.arange(0, len(sm))
 
     p_sim = z * (swi[1:] - swi[:-1]) + \
         ((a * swi[1:]**b + a * swi[:-1]**b)*(jdates[1:]-jdates[:-1]) / 2.)
 
-    p_sim[abs(np.diff(swi))<=0.0001]=0
-    p_sim[p_sim>999999]=np.nan
+    p_sim[abs(np.diff(swi)) <= 0.0001] = 0
+    p_sim[p_sim > 999999] = np.nan
 
     return np.clip(p_sim, 0, thr)
 
@@ -181,6 +178,7 @@ def calib_sm2rain_T(jdates, sm, p_obs, NN, x0=None, bounds=None,
                     options=None, method='TNC'):
     """
     Calibrate sm2rain parameters a, b, z, T.
+
     Parameters
     ----------
     jdates: numpy.ndarray
@@ -203,6 +201,7 @@ def calib_sm2rain_T(jdates, sm, p_obs, NN, x0=None, bounds=None,
     method : str, optional
         Type of solver (default: 'TNC', i.e. Truncated Newton).
         For more explanation/options see scipy.minimize.
+
     Returns
     -------
     a : float
@@ -218,8 +217,9 @@ def calib_sm2rain_T(jdates, sm, p_obs, NN, x0=None, bounds=None,
         bounds = ((0, 200), (0.01, 50), (1, 800), (0.0001, 8))
 
     if x0 is None:
-        p=[0.1,0.1,0.1,0.]
-        x0=np.array([(bounds[i][1]-bounds[i][0])*p[i]+bounds[i][0] for i in range(len(bounds))])
+        p = [0.1, 0.1, 0.1, 0.]
+        x0 = np.array([(bounds[i][1] - bounds[i][0])*p[i] + bounds[i][0]
+                       for i in range(len(bounds))])
 
     if options is None:
         options = {'ftol': 1e-8, 'maxiter': 3000, 'disp': False}
@@ -235,6 +235,7 @@ def calib_sm2rain_T(jdates, sm, p_obs, NN, x0=None, bounds=None,
 def cost_func_T(x0, jdates, sm, p_obs, NN):
     """
     Cost function.
+
     Parameters
     ----------
     x0 : tuple
@@ -247,6 +248,7 @@ def cost_func_T(x0, jdates, sm, p_obs, NN):
         Observed precipitation time series.
     NN : integer
         Data aggregation coefficient
+
     Returns
     -------
     rmsd : float
@@ -281,28 +283,27 @@ def swicomp_nan(in_data, in_jd, ctime):
     gain = 1
     filtered.fill(np.nan)
 
-    ID=np.where(~np.isnan(in_data))
-    D=in_jd[ID]
-    SWI=in_data[ID]
-    tdiff=np.diff(D)
+    ID = np.where(~np.isnan(in_data))
+    D = in_jd[ID]
+    SWI = in_data[ID]
+    tdiff = np.diff(D)
 
     # find the first non nan value in the time series
 
-    for i in range(2,SWI.size):
-        gain=gain/(gain+np.exp(-tdiff[i-1]/ctime))
-        SWI[i]=SWI[i-1]+gain*(SWI[i]-SWI[i-1])
+    for i in range(2, SWI.size):
+        gain = gain / (gain + np.exp(- tdiff[i - 1] / ctime))
+        SWI[i] = SWI[i - 1] + gain * (SWI[i] - SWI[i-1])
 
-    filtered[ID]=SWI
+    filtered[ID] = SWI
 
     return filtered
 
 
-
-
 def calib_sm2rain_Tpot(jdates, sm, p_obs, NN, x0=None, bounds=None,
-                        options=None, method='TNC'):
+                       options=None, method='TNC'):
     """
     Calibrate sm2rain parameters a, b, z, T, c.
+
     Parameters
     ----------
     jdates: numpy.ndarray
@@ -314,7 +315,8 @@ def calib_sm2rain_Tpot(jdates, sm, p_obs, NN, x0=None, bounds=None,
     NN : integer
         Data aggregation coefficient
     x0 : tuple, optional
-        Initial guess of a, b, z, T, c (default: (10%, 5%, 10%, 10%, 10%) of bounds limits).
+        Initial guess of a, b, z, T, c
+        (default: (10%, 5%, 10%, 10%, 10%) of bounds limits).
     bounds : tuple of tuples, optional
         Boundary values for a, b, z, T, c
         (default: ((0, 160), (1, 50), (10, 400), (0.05 3.00), (0.05 0.75))).
@@ -325,6 +327,7 @@ def calib_sm2rain_Tpot(jdates, sm, p_obs, NN, x0=None, bounds=None,
     method : str, optional
         Type of solver (default: 'TNC', i.e. Truncated Newton).
         For more explanation/options see scipy.minimize.
+
     Returns
     -------
     a : float
@@ -342,8 +345,9 @@ def calib_sm2rain_Tpot(jdates, sm, p_obs, NN, x0=None, bounds=None,
         bounds = ((0, 200), (0.01, 50), (1, 800), (0.05, 3.), (0.05, 0.75))
 
     if x0 is None:
-        p=[0.1,0.05,0.1,0.1,0.1]
-        x0=np.array([(bounds[i][1]-bounds[i][0])*p[i]+bounds[i][0] for i in range(len(bounds))])
+        p = [0.1, 0.05, 0.1, 0.1, 0.1]
+        x0 = np.array([(bounds[i][1] - bounds[i][0]) * p[i] + bounds[i][0]
+                       for i in range(len(bounds))])
 
     if options is None:
         options = {'ftol': 1e-8, 'maxiter': 3000, 'disp': False}
@@ -359,6 +363,7 @@ def calib_sm2rain_Tpot(jdates, sm, p_obs, NN, x0=None, bounds=None,
 def cost_func_Tpot(x0, jdates, sm, p_obs, NN):
     """
     Cost function.
+
     Parameters
     ----------
     x0 : tuple
@@ -371,6 +376,7 @@ def cost_func_Tpot(x0, jdates, sm, p_obs, NN):
         Observed precipitation time series.
     NN : integer
         Data aggregation coefficient
+
     Returns
     -------
     rmsd : float
@@ -384,9 +390,11 @@ def cost_func_Tpot(x0, jdates, sm, p_obs, NN):
 
     return rmsd
 
+
 def swi_pot_nan(sm, jd, t, POT):
     """
     Soil water index computation.
+
     Parameters
     ----------
     sm : numpy.ndarray
@@ -395,6 +403,7 @@ def swi_pot_nan(sm, jd, t, POT):
         Julian date time series.
     t : float, optional
         t parameter, the unit is fraction of days (default: 2).
+
     Returns
     -------
     swi : numpy.ndarray
@@ -403,28 +412,32 @@ def swi_pot_nan(sm, jd, t, POT):
         Gain parameter time series.
     """
 
-    idx=np.where(~np.isnan(sm))[0]
+    idx = np.where(~np.isnan(sm))[0]
 
     swi = np.empty(len(sm))
-    swi[:]=np.nan
+    swi[:] = np.nan
     swi[idx[0]] = sm[idx[0]]
 
-    Tupd=t*sm[idx[0]]**-POT
-    gain=1
+    Tupd = t * sm[idx[0]] ** (- POT)
+    gain = 1
 
     for i in range(1, idx.size):
-        dt = jd[idx[i]] - jd[idx[i-1]]
-        gain0=gain/(gain+np.exp(-dt/Tupd))
-        swi[idx[i]] = swi[idx[i-1]] + gain0*(sm[idx[i]]-swi[idx[i-1]])
-        Tupd=t*swi[idx[i]]**-POT
-        gain0=gain/(gain+np.exp(-dt/Tupd))
-        swi[idx[i]] = swi[idx[i-1]] + gain0*(sm[idx[i]]-swi[idx[i-1]])
-        Tupd=t*swi[idx[i]]**-POT
-        gain0=gain/(gain+np.exp(-dt/Tupd))
-        swi[idx[i]] = swi[idx[i-1]] + gain0*(sm[idx[i]]-swi[idx[i-1]])
-        Tupd=t*swi[idx[i]]**-POT
-        gain=gain0
 
+        dt = jd[idx[i]] - jd[idx[i-1]]
+
+        gain0 = gain / (gain + np.exp(- dt / Tupd))
+        swi[idx[i]] = swi[idx[i - 1]] + gain0 * (sm[idx[i]] - swi[idx[i - 1]])
+        Tupd = t * swi[idx[i]] ** (- POT)
+
+        gain0 = gain / (gain + np.exp(- dt / Tupd))
+        swi[idx[i]] = swi[idx[i - 1]] + gain0 * (sm[idx[i]] - swi[idx[i - 1]])
+        Tupd = t * swi[idx[i]] ** (- POT)
+
+        gain0 = gain / (gain + np.exp(- dt / Tupd))
+        swi[idx[i]] = swi[idx[i - 1]] + gain0 * (sm[idx[i]] - swi[idx[i - 1]])
+        Tupd = t * swi[idx[i]] ** (- POT)
+
+        gain = gain0
 
     return swi
 
