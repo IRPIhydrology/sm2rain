@@ -446,3 +446,4 @@ if _numba_available:
     # perform numba-jit compilation of swi_pot_nan to speed up
     # recursive calculations
     swi_pot_nan = jit(swi_pot_nan, nopython=True, nogil=True)
+    swicomp_nan = jit(swicomp_nan, nopython=True, nogil=True)
