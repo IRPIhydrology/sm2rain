@@ -6,6 +6,13 @@ import numpy as np
 from scipy.optimize import minimize
 np.seterr(invalid='ignore')
 
+# handle the case when numba is not available
+try:
+    from numba import jit
+    _numba_available = True
+except ImportError:
+    _numba_available = False
+
 
 def ts_sm2rain(sm, a, b, z, jdates=None, T=None, c=None, thr=None):
     """
@@ -420,3 +427,9 @@ def swi_pot_nan(sm, jd, t, POT):
 
 
     return swi
+
+
+if _numba_available:
+    # perform numba-jit compilation of swi_pot_nan to speed up
+    # recursive calculations
+    swi_pot_nan = jit(swi_pot_nan, nopython=True, nogil=True)
