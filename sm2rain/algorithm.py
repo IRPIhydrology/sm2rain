@@ -11,6 +11,97 @@ try:
 except ImportError:
     _numba_available = False
 
+try:
+    # optionally add wrapper-functions to use pandas-Series directly
+    # in case pandas is installed
+    from pandas import Series
+
+    def ts_sm2rain_pd(smdf, sm2rainparams, thr=None, suffix='_SM2R'):
+        """
+        a wrapper for `ts_sm2rain_Tpot()` that allows using a pandas.Series
+        directly as input
+
+        Parameters
+        ----------
+        smdf : pandas.Series
+            a soil-moisture timeseries with a datetime-index.
+        sm2rainparams : dict
+            a dict of the sm2rain parameters (a, b, z, T, c).
+        thr : float, optional
+            Upper threshold of p_sim (default: None).
+        suffix : str, optional
+            A suffix that will be added to the parameter-name in the returned
+            Panas-Series (default: '_SM2R')
+
+        Returns
+        -------
+        df : pandas.Series
+            the estimated rainfall as a pandas.Series
+            (named with the same name as smdf, but with a suffix "_SM2R")
+        """
+        assert isinstance(smdf, Series), 'smdf must be a pandas.Series!'
+
+        df = Series(
+            data=ts_sm2rain(jdates=smdf.index.to_julian_date().to_numpy(),
+                            sm=smdf.to_numpy(),
+                            **sm2rainparams,
+                            thr=thr),
+            index=smdf.index[:-1],
+            name=smdf.name + suffix)
+
+        return df
+
+    def calib_sm2rain_pd(smdf, rainfdf, NN, x0=None, bounds=None,
+                         options=None, method='TNC'):
+        """
+        a wrapper for `calib_sm2rain_Tpot()` that allows using pandas.Series
+        directly as input
+
+        Parameters
+        ----------
+        smdf : pandas.Series
+            a soil-moisture timeseries with a datetime-index.
+        rainfdf : pandas.Series
+            auxiliary rainfall timeseries with a datetime-index.
+        NN : integer
+            Data aggregation coefficient
+        x0 : tuple, optional
+            Initial guess of a, b, z, T, c
+            (default: (8, 5.9, 49, 0.345, 0.12))
+        bounds : tuple of tuples, optional
+            Boundary values for a, b, z, T, c
+            (default: ((0, 160), (1, 50), (10, 400), (0.05 3.00), (0.05 0.75)))
+        options : dict, optional
+            A dictionary of solver options
+            (default: {'ftol': 1e-8, 'maxiter': 3000, 'disp': False}).
+            For more explanation/options see scipy.minimize.
+        method : str, optional
+            Type of solver (default: 'TNC', i.e. Truncated Newton).
+            For more explanation/options see scipy.minimize.
+
+        Returns
+        -------
+        sm2rainparams : dict
+            a dict of the estimated sm2rain parameters:
+            (a [mm], b [-], z [mm], T [days], c [-])
+        """
+
+        assert isinstance(smdf, Series), 'smdf must be a pandas.Series!'
+        assert isinstance(rainfdf, Series), 'rainfdf must be a pandas.Series!'
+
+        jdates = smdf.index.to_julian_date().to_numpy()
+        sm = smdf.to_numpy()
+        p_obs = rainfdf.to_numpy()[:-1]
+
+        sm2rain_params = calib_sm2rain_Tpot(jdates=jdates, sm=sm, p_obs=p_obs,
+                                            NN=NN, x0=x0, bounds=bounds,
+                                            options=options, method=method)
+
+        return dict(zip(['a', 'b', 'z', 'T', 'c'], sm2rain_params))
+
+except ImportError:
+    pass
+
 
 def ts_sm2rain(sm, a, b, z, jdates=None, T=None, c=None, thr=None):
     """
